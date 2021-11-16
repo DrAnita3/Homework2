@@ -19,7 +19,7 @@ public class BlogContent {
 
     @Getter
     @Setter
-    @Column
+    @Column(nullable = false)
     private String blogContent;
 
 
