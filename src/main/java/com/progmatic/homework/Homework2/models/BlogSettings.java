@@ -19,22 +19,22 @@ public class BlogSettings {
 
     @Getter
     @Setter
-    @Column
+    @Column(nullable = false)
     private String blogName;
 
     @Getter
     @Setter
-    @Column
+    @Column(nullable = false)
     private String blogCategory;
 
     @Getter
     @Setter
-    @Column
+    @Column(nullable = false)
     private String blogColor;
 
     @Getter
     @Setter
-    @Column
+    @Column(nullable = false)
     private byte[] blogBackground;
 
     //private List<BlogContent> blogContentList;
