@@ -2,13 +2,18 @@ package com.progmatic.homework.Homework2.models;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 @Entity
 @Table
-public class UserProfile {
+public class UserProfile implements UserDetails {
 
     @Getter
     @Setter
@@ -48,20 +53,31 @@ public class UserProfile {
     @Column
     private String emailAddress;
 
+    @Getter
+    @Setter
+    private boolean isEnabled;
+
+
+    @Getter
+    @Setter
+    private boolean isLocked;
+
     //List<BlogSettings> blogSettings;
 
 
     public UserProfile() {
+        isEnabled = true;
     }
 
-    public UserProfile(int userId, String username, ProfileType profileType) {
+    public UserProfile(int userId, String username, ProfileType profileType, boolean isEnabled) {
         this.userId = userId;
         this.username = username;
         this.profileType = profileType;
+        isEnabled = true;
     }
 
     public UserProfile(int userId, String username, String userPassword, String wholeName, ProfileType profileType,
-                       byte[] profileImg, String emailAddress) {
+                       byte[] profileImg, String emailAddress, boolean isEnabled) {
         this.userId = userId;
         this.username = username;
         this.userPassword = userPassword;
@@ -69,6 +85,7 @@ public class UserProfile {
         this.profileType = profileType;
         this.profileImg = profileImg;
         this.emailAddress = emailAddress;
+        isEnabled = true;
     }
 
 
@@ -92,4 +109,43 @@ public class UserProfile {
                 //blogSettings;
     }
 
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        List<SimpleGrantedAuthority> list = new ArrayList<>();
+        for(UserAuthority auth : profileType.AUTHORITIES){
+            SimpleGrantedAuthority authority = new SimpleGrantedAuthority(auth.name());
+            list.add(authority);
+        }
+        return list;
+    }
+
+    @Override
+    public String getPassword() {
+        return userPassword;
+    }
+
+    @Override
+    public String getUsername() {
+        return username;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return isEnabled;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return isEnabled;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return isEnabled;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
+    }
 }

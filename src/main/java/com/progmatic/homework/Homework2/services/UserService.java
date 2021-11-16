@@ -22,6 +22,7 @@ public class UserService implements UserDetailsService {
     @Override
     @Transactional
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+
         UserProfile user = em.createQuery(
                 "SELECT user FROM UserProfile user WHERE user.username=:name", UserProfile.class)
                 .setParameter("name", username)
@@ -31,8 +32,7 @@ public class UserService implements UserDetailsService {
 
     @Transactional
     public List<UserProfile> listAllUsers() {
-        List<UserProfile> users = em.createQuery(
-                "SELECT user FROM UserProfile user", UserProfile.class)
+        List<UserProfile> users = em.createQuery("SELECT user FROM UserProfile user", UserProfile.class)
                 .getResultList();
 
         return users;

@@ -29,6 +29,4 @@ public class ReturnModel<T> {
         this.object = object;
     }
 
-
-
 }
