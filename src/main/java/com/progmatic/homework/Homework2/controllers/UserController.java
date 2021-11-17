@@ -3,23 +3,23 @@ package com.progmatic.homework.Homework2.controllers;
 import com.progmatic.homework.Homework2.models.BlogContent;
 import com.progmatic.homework.Homework2.models.UserProfile;
 import com.progmatic.homework.Homework2.returnModels.ReturnModel;
-import com.progmatic.homework.Homework2.services.DataService;
+import com.progmatic.homework.Homework2.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-public class StaticController {
+public class UserController {
+
+    private UserService service;
+
 
     @Autowired
-    private DataService dataService;
-
-    @GetMapping("/data")
-    public List<String> getData() {
-        return dataService.getDataList();
+    public UserController(UserService service) {
+        this.service = service;
     }
+
 
     /*@GetMapping("/users")
     public ReturnModel<UserProfile> getAllUsers() {
@@ -29,14 +29,29 @@ public class StaticController {
         return toReturn;
     }*/
 
-    @GetMapping("/users")
+    /*@GetMapping("/users")
     public ReturnModel<UserProfile> getAllUsers() {
         ReturnModel<UserProfile> toReturn = new ReturnModel<>();
         toReturn.setSuccess(true);
         return toReturn;
+    }*/
+
+    @GetMapping("/users")
+    public List<UserProfile> getAllUsers() {
+        return service.getAllUsers();
     }
 
     @GetMapping("/user/{id}")
+    public UserProfile getOneUser(
+        @PathVariable ("userId") int userId
+    ) {
+        if (userId != 0) {
+            return service.getOneUser(userId);
+        }
+        return null;
+    }
+
+    /*@GetMapping("/user/{id}")
     public ReturnModel<UserProfile> getUserById(
             @PathVariable Long id
     ) {
@@ -47,7 +62,25 @@ public class StaticController {
             toReturn.setSuccess(false);
         }
         return toReturn;
+    }*/
+
+    @GetMapping("/user")
+    public UserProfile getLoggedInUser() {
+
+        return service.getLoggedInUser();
     }
+
+
+    @GetMapping("/register")
+    public String registerUser() {
+        boolean registered = service.registerUsers();
+        if (registered) {
+            return "ok";
+        }
+        return "not ok";
+    }
+
+
 
     @PostMapping("/register")
     public ReturnModel<String> registerName(
@@ -57,23 +90,4 @@ public class StaticController {
         toReturn.setObject("user is registered");
         return toReturn;
     }
-
-
-    @GetMapping("/blogs")
-    public ReturnModel<BlogContent> getAllBlogs() {
-        ReturnModel<BlogContent> toReturn = new ReturnModel<>();
-        toReturn.setSuccess(true);
-        return toReturn;
-    }
-
-    @PostMapping("/blogs")
-    public ReturnModel<String> registerBlog(
-            @RequestBody BlogContent blog
-    ) {
-        ReturnModel<String> toReturn = new ReturnModel<>();
-        toReturn.setObject("blog is registered");
-        return toReturn;
-    }
-
-
 }

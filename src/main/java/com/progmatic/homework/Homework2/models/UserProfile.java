@@ -45,6 +45,12 @@ public class UserProfile implements UserDetails {
 
     @Getter
     @Setter
+    @Enumerated(EnumType.STRING)
+    @Column
+    private UserAuthority userAuthority;
+
+    @Getter
+    @Setter
     @Column
     private byte[] profileImg;
 
@@ -52,6 +58,7 @@ public class UserProfile implements UserDetails {
     @Setter
     @Column
     private String emailAddress;
+
 
     @Getter
     @Setter
@@ -69,11 +76,24 @@ public class UserProfile implements UserDetails {
         isEnabled = true;
     }
 
-    public UserProfile(int userId, String username, ProfileType profileType, boolean isEnabled) {
+    public UserProfile(int userId, String username, ProfileType profileType,
+                       UserAuthority userAuthority, boolean isEnabled) {
         this.userId = userId;
         this.username = username;
         this.profileType = profileType;
+        this.userAuthority = userAuthority;
         isEnabled = true;
+    }
+
+    public UserProfile(int userId, String username, String userPassword, String wholeName,
+                       ProfileType profileType, UserAuthority userAuthority, String emailAddress) {
+        this.userId = userId;
+        this.username = username;
+        this.userPassword = userPassword;
+        this.wholeName = wholeName;
+        this.profileType = profileType;
+        this.userAuthority = userAuthority;
+        this.emailAddress = emailAddress;
     }
 
     public UserProfile(int userId, String username, String userPassword, String wholeName, ProfileType profileType,
@@ -104,6 +124,7 @@ public class UserProfile implements UserDetails {
                 userPassword + ", " +
                 wholeName + ", " +
                 profileType + ", " +
+                userAuthority + ", " +
                 profileImg + ", " +
                 emailAddress + ", ";
                 //blogSettings;
@@ -119,10 +140,6 @@ public class UserProfile implements UserDetails {
         return list;
     }
 
-    @Override
-    public String getPassword() {
-        return userPassword;
-    }
 
     @Override
     public String getUsername() {
@@ -130,22 +147,27 @@ public class UserProfile implements UserDetails {
     }
 
     @Override
+    public String getPassword() {
+        return userPassword;
+    }
+
+    @Override
     public boolean isAccountNonExpired() {
-        return isEnabled;
+        return !isLocked;
     }
 
     @Override
     public boolean isAccountNonLocked() {
-        return isEnabled;
+        return !isLocked;
     }
 
     @Override
     public boolean isCredentialsNonExpired() {
-        return isEnabled;
+        return !isLocked;
     }
 
     @Override
     public boolean isEnabled() {
-        return true;
+        return !isLocked;
     }
 }
